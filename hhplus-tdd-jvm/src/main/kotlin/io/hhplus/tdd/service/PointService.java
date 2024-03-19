@@ -6,10 +6,12 @@ import io.hhplus.tdd.dto.PointHistoryDto;
 import io.hhplus.tdd.dto.UserPointDto;
 import io.hhplus.tdd.exception.CustomException;
 import io.hhplus.tdd.exception.ErrorCode;
+import io.hhplus.tdd.point.PointHistory;
 import io.hhplus.tdd.point.TransactionType;
 import io.hhplus.tdd.point.UserPoint;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,6 +49,7 @@ public class PointService {
     public List<PointHistoryDto> history(Long id) {
         return pointHistoryTable.selectAllByUserId(id)
                 .stream()
+                .sorted(Comparator.comparingLong(PointHistory::getId))
                 .map(PointHistoryDto::new)
                 .collect(Collectors.toList());
     }
