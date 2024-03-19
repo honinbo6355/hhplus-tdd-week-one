@@ -4,6 +4,8 @@ import io.hhplus.tdd.database.PointHistoryTable;
 import io.hhplus.tdd.database.UserPointTable;
 import io.hhplus.tdd.dto.PointHistoryDto;
 import io.hhplus.tdd.dto.UserPointDto;
+import io.hhplus.tdd.exception.CustomException;
+import io.hhplus.tdd.exception.ErrorCode;
 import io.hhplus.tdd.point.TransactionType;
 import io.hhplus.tdd.point.UserPoint;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class PointService {
+
     private UserPointTable userPointTable;
     private PointHistoryTable pointHistoryTable;
 
@@ -21,15 +24,16 @@ public class PointService {
         this.pointHistoryTable = pointHistoryTable;
     }
 
-    public UserPointDto charge(Long id, Long amount) {
-        // TODO rollback 처리
+    public synchronized UserPointDto charge(Long id, Long amount) {
+        if (amount <= 0) {
+            throw new CustomException(ErrorCode.INVALID_PARAMETER);
+        }
         UserPoint userPoint = userPointTable.insertOrUpdate(id, amount);
         pointHistoryTable.insert(userPoint.getId(), userPoint.getPoint(), TransactionType.CHARGE, userPoint.getUpdateMillis());
         return new UserPointDto(userPoint);
     }
 
-    public UserPointDto use(Long id, Long amount) {
-        // TODO rollback 처리
+    public synchronized UserPointDto use(Long id, Long amount) {
         UserPoint userPoint = userPointTable.selectById(id);
         UserPoint usedUserPoint = userPoint.usePoint(amount);
         pointHistoryTable.insert(usedUserPoint.getId(), usedUserPoint.getPoint(), TransactionType.USE, usedUserPoint.getUpdateMillis());
