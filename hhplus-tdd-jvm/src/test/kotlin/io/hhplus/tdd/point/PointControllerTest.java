@@ -23,15 +23,24 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * 컨트롤러 계층의 유닛 테스트이다.
+ * 컨트롤러 기능 외의 다른 의존성은 배제한다.
+ */
 @WebMvcTest(PointController.class)
 public class PointControllerTest {
 
+    // 가짜 객체 주입
     @MockBean
     private PointService pointService;
 
+    // bean 의존성 주입
     @Autowired
     private MockMvc mockMvc;
 
+    /**
+     * 작성 이유 : 포인트 조회 성공시 결과 검증
+     */
     @Test
     @DisplayName("포인트_조회_성공할경우")
     public void 포인트_조회_성공할경우() throws Exception {
@@ -51,6 +60,9 @@ public class PointControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.point").value(0L));
     }
 
+    /**
+     * 작성 이유 : 포인트 조회시 NPE 발생할 경우 결과 검증
+     */
     @Test
     @DisplayName("포인트_조회_실패할경우")
     public void 포인트_조회_실패할경우() throws Exception {
@@ -69,9 +81,12 @@ public class PointControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("에러가 발생했습니다."));
     }
 
+    /**
+     * 작성 이유 : 포인트 내역 조회시 결과값 검증
+     */
     @Test
-    @DisplayName("포인트_충전_사용_내역_조회_성공할경우")
-    public void 포인트_충전_사용_내역_조회() throws Exception {
+    @DisplayName("포인트_내역_조회_성공할경우")
+    public void 포인트_내역_조회() throws Exception {
         // given
         Long userId = 1L;
         List<PointHistoryDto> pointHistoryDtos = new ArrayList<>();
@@ -91,9 +106,12 @@ public class PointControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$").isArray());
     }
 
+    /**
+     * 작성 이유 : 포인트 내역 조회시 NPE 발생할 경우 결과 검증
+     */
     @Test
-    @DisplayName("포인트_충전_사용_내역_조회_실패할경우")
-    public void 포인트_충전_사용_내역_조회_실패할경우() throws Exception {
+    @DisplayName("포인트_내역_조회_실패할경우")
+    public void 포인트_내역_조회_실패할경우() throws Exception {
         // given
         Long userId = 1L;
 
@@ -109,6 +127,9 @@ public class PointControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("에러가 발생했습니다."));
     }
 
+    /**
+     * 작성 이유 : 포인트 충전 성공할 경우 결과 검증
+     */
     @Test
     @DisplayName("포인트_충전_성공할경우")
     public void 포인트_충전_성공할경우() throws Exception {
@@ -130,6 +151,9 @@ public class PointControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.point").value(amount));
     }
 
+    /**
+     * 작성 이유 : 충전금액 0이하일때 INVALID_PARAMETER 예외 발생할 경우 결과 검증
+     */
     @Test
     @DisplayName("충전금액_0이하일때_포인트_충전_실패할경우")
     public void 충전금액_0이하일때_포인트_충전_실패할경우() throws Exception {
@@ -151,6 +175,9 @@ public class PointControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value(ErrorCode.INVALID_PARAMETER.getMessage()));
     }
 
+    /**
+     * 작성 이유 : 포인트 충전 성공할 경우 결과 검증
+     */
     @Test
     @DisplayName("포인트_사용_성공할경우")
     public void 포인트_사용_성공할경우() throws Exception {
@@ -172,6 +199,10 @@ public class PointControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(userId))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.point").value(usedAmount));
     }
+
+    /**
+     * 작성 이유 : 사용할 포인트가 부족할 때 POINT_SHORTAGE 예외 발생할 경우 결과 검증
+     */
     @Test
     @DisplayName("사용할_포인트가_부족할때_포인트_사용_실패할경우")
     public void 사용할_포인트가_부족할때_포인트_사용_실패할경우() throws Exception {

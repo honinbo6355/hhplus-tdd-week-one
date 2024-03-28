@@ -10,11 +10,19 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.mockito.Mockito.when;
 
+/**
+ * 영속성 계층의 유닛 테스트이다.
+ * 영속성 계층에서는 의존하고 있는 계층이 없다.
+ */
 @ExtendWith(MockitoExtension.class)
 public class UserPointTableTest {
+    // 가짜 객체 주입
     @Mock
     private UserPointTable userPointTable;
 
+    /**
+     * 작성 이유 : 포인트 조회 성공시 결과 검증
+     */
     @Test
     @DisplayName("포인트_조회")
     public void 포인트_조회() {
@@ -31,8 +39,11 @@ public class UserPointTableTest {
         Assertions.assertEquals(userPoint.getPoint(), resultUserPoint.getPoint());
     }
 
+    /**
+     * 작성 이유 : 포인트 수정 성공시 결과 검증
+     */
     @Test
-    @DisplayName("포인트_충전")
+    @DisplayName("포인트_수정")
     public void 포인트_수정() {
         // given
         Long id = 1L;

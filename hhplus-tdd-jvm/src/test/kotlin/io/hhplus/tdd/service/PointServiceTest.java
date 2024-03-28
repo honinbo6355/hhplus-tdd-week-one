@@ -22,15 +22,25 @@ import java.util.List;
 
 import static org.mockito.Mockito.when;
 
+/**
+ * 서비스 계층의 유닛 테스트이다.
+ * 서비스 기능 외의 다른 의존성은 배제한다.
+ */
 @ExtendWith(MockitoExtension.class)
 public class PointServiceTest {
+    // 가짜 객체 주입
     @Mock
     private UserPointTable userPointTable;
+    // 가짜 객체 주입
     @Mock
     private PointHistoryTable pointHistoryTable;
+    // table 객체들 주입
     @InjectMocks
     private PointService pointService;
 
+    /**
+     * 작성 이유 : 포인트 충전 성공시 결과값 검증
+     */
     @Test
     @DisplayName("포인트_충전_성공할경우")
     public void 포인트_충전_성공할경우() {
@@ -47,6 +57,9 @@ public class PointServiceTest {
         Assertions.assertEquals(amount, userPointDto.getPoint());
     }
 
+    /**
+     * 작성 이유 : 충전금액 0이하일 때 INVALID_PARAMETER 예외 발생할 경우 결과값 검증
+     */
     @Test
     @DisplayName("충전금액_0이하일때_포인트_충전_실패할경우")
     public void 충전금액_0이하일때_포인트_충전_실패할경우() {
@@ -61,6 +74,9 @@ public class PointServiceTest {
         Assertions.assertEquals(ErrorCode.INVALID_PARAMETER, customException.getErrorCode());
     }
 
+    /**
+     * 작성 이유 : 포인트 사용 성공할 경우 결과값 검증
+     */
     @Test
     @DisplayName("포인트_사용_성공할경우")
     public void 포인트_사용_성공할경우() {
@@ -78,6 +94,9 @@ public class PointServiceTest {
         Assertions.assertEquals(userPoint.getPoint()-amount, userPointDto.getPoint());
     }
 
+    /**
+     * 작성 이유 : 사용할 포인트가 부족할 때 POINT_SHORTAGE 예외 발생할 경우 결과 검증
+     */
     @Test
     @DisplayName("사용할_포인트가_부족할때_포인트_사용_실패할경우")
     public void 사용할_포인트가_부족할때_포인트_사용_실패할경우() {
@@ -94,6 +113,9 @@ public class PointServiceTest {
         Assertions.assertEquals(ErrorCode.POINT_SHORTAGE, customException.getErrorCode());
     }
 
+    /**
+     * 작성 이유 : 포인트 조회 성공할 경우 결과 검증
+     */
     @Test
     @DisplayName("포인트_조회_성공할경우")
     public void 포인트_조회_성공할경우() {
@@ -110,9 +132,12 @@ public class PointServiceTest {
         Assertions.assertEquals(userPoint.getPoint(), userPointDto.getPoint());
     }
 
+    /**
+     * 작성 이유 : 포인트 내역 조회 성공할 경우 결과 검증
+     */
     @Test
-    @DisplayName("포인트_충전_사용_내역_조회")
-    public void 포인트_충전_사용_내역_조회() {
+    @DisplayName("포인트_내역_조회")
+    public void 포인트_내역_조회() {
         // given
         Long userId = 1L;
         List<PointHistory> pointHistoryList = new ArrayList<>();

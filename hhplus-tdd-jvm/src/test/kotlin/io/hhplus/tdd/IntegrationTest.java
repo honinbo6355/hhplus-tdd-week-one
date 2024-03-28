@@ -15,12 +15,18 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * 통합 테스트는 실제 환경과 동일하게 진행하는 테스트이다.
+ * 각 계층의 의존성을 주입받고 테스트한다.
+ */
 @SpringBootTest
 public class IntegrationTest {
 
+    // bean 의존성 주입
     @Autowired
     private PointService pointService;
 
+    // bean 의존성 주입
     @Autowired
     private UserPointTable userPointTable;
 
@@ -29,7 +35,7 @@ public class IntegrationTest {
     class Charge {
 
         /**
-         * 클라이언트에서 잘못된 금액을 전달하는 경우 예외 발생 테스트
+         * 작성 이유 : 클라이언트에서 잘못된 금액을 전달하는 경우 예외 발생 테스트
          */
         @Test
         public void _0이하_금액_충전_시도할경우() {
@@ -39,7 +45,7 @@ public class IntegrationTest {
         }
 
         /**
-         * 충전이 정상적으로 수행되는 경우 성공 테스트
+         * 작성 이유 : 충전이 정상적으로 수행되는 경우 성공 테스트
          */
         @Test
         public void 충전_성공할경우() {
@@ -57,7 +63,7 @@ public class IntegrationTest {
     class Use {
 
         /**
-         * 잔고보다 초과된 금액을 사용할 경우 예외 발생 테스트
+         * 작성 이유 : 잔고보다 초과된 금액을 사용할 경우 예외 발생 테스트
          */
         @Test
         public void 잔고_부족할경우() {
@@ -69,7 +75,7 @@ public class IntegrationTest {
         }
 
         /**
-         * 정상적으로 사용할 경우 성공 테스트
+         * 작성 이유 : 정상적으로 사용할 경우 성공 테스트
          */
         @Test
         public void 사용_성공할경우() {
@@ -86,7 +92,7 @@ public class IntegrationTest {
     class Point {
 
         /**
-         * 정상적으로 조회할 경우 성공 테스트
+         * 작성 이유 : 정상적으로 조회할 경우 성공 테스트
          */
         @Test
         public void 조회_성공할경우() {
@@ -104,7 +110,7 @@ public class IntegrationTest {
     class History {
 
         /**
-         * 정상적으로 내역 조회할 경우 성공 테스트
+         * 작성 이유 : 정상적으로 내역 조회할 경우 성공 테스트
          */
         @Test
         public void 내역_조회_성공할경우() {
@@ -122,7 +128,8 @@ public class IntegrationTest {
     class Concurrency {
 
         /**
-         * 분산 환경이 아닌경우(단일 인스턴스), synchronized로 동기화 처리 되는지 테스트
+         * 작성 이유 : 분산 환경이 아닌경우(단일 인스턴스), synchronized로 동기화 처리 되는지 테스트
+         * 시나리오 : 쓰레드 10개에서 (1000원 업데이트 => 500원 사용)
          */
         @Test
         public void 동시에_여러건_충전_사용_요청시_성공_테스트() throws InterruptedException {
@@ -150,7 +157,8 @@ public class IntegrationTest {
         }
 
         /**
-         * 분산 환경이 아닌경우(단일 인스턴스), synchronized로 동기화 처리 되는지 테스트
+         * 작성 이유 : 분산 환경이 아닌경우(단일 인스턴스), synchronized로 동기화 처리 되는지 테스트
+         * 시나리오 : 5000원 충전 - 쓰레드 10개에서 (500원 사용)
          */
         @Test
         public void 동시에_여러건_사용_요청시_성공_테스트() throws InterruptedException {

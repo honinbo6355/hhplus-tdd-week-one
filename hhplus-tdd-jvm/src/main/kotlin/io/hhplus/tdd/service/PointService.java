@@ -26,6 +26,7 @@ public class PointService {
         this.pointHistoryTable = pointHistoryTable;
     }
 
+    // 동시성 처리를 위해 synchronized 처리
     public synchronized UserPointDto charge(Long id, Long amount) {
         if (amount <= 0) {
             throw new CustomException(ErrorCode.INVALID_PARAMETER);
@@ -35,6 +36,7 @@ public class PointService {
         return new UserPointDto(userPoint);
     }
 
+    // 동시성 처리를 위해 synchronized 처리
     public synchronized UserPointDto use(Long id, Long amount) {
         UserPoint userPoint = userPointTable.selectById(id);
         UserPoint usedUserPoint = userPoint.usePoint(amount);
